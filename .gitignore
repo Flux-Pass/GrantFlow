@@ -1,0 +1,43 @@
+# Rust / Cargo
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Soroban
+*.wasm
+*.optimized.wasm
+
+# Node / NPM
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend build
+frontend/dist/
+frontend/build/
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.key
+*.pem
+secrets/
+.secrets
+
+# Test coverage
+coverage/
+*.lcov
