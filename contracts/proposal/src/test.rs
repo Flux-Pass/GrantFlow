@@ -64,3 +64,28 @@ fn test_voting() {
     assert_eq!(proposal.votes_for, 100);
     assert_eq!(proposal.votes_against, 50);
 }
+
+#[test]
+fn test_cancel_proposal() {
+    let env = Env::default();
+    let contract_id = env.register_contract(None, ProposalContract);
+    let client = ProposalContractClient::new(&env, &contract_id);
+
+    let proposer = Address::generate(&env);
+    let milestones = vec![&env, String::from_str(&env, "Milestone 1")];
+
+    let proposal_id = client.submit_proposal(
+        &1,
+        &proposer,
+        &String::from_str(&env, "Cancel Test"),
+        &String::from_str(&env, "Test"),
+        &50_000,
+        &86400,
+        &milestones,
+    );
+
+    client.cancel_proposal(&proposal_id, &proposer);
+
+    let proposal = client.get_proposal(&proposal_id);
+    assert_eq!(proposal.status, ProposalStatus::Cancelled);
+}
