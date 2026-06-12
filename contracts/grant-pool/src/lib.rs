@@ -12,6 +12,7 @@ pub enum DataKey {
 
 #[derive(Clone)]
 #[contracttype]
+/// Metadata and funding details for a grant pool
 pub struct GrantPool {
     pub id: u64,
     pub name: String,
