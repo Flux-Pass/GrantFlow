@@ -20,6 +20,9 @@ fn test_create_and_submit_milestone() {
 
     client.create_milestones(&1, &descriptions, &amounts);
 
+    let milestone_count = client.get_proposal_milestone_count(&1);
+    assert_eq!(milestone_count, 2);
+
     let submitter = Address::generate(&env);
     client.submit_milestone(
         &1,
