@@ -139,6 +139,9 @@ cargo test
 - [x] Core Soroban contracts
 - [x] Contract unit tests
 - [x] Deployment and initialization scripts
+- [x] Activate/deactivate grant pools
+- [x] Update pool details (name/description)
+- [x] Cancel pending proposals
 - [ ] Cross-contract enforcement for governance and pool allocation
 - [ ] Token-based payment release
 - [ ] Frontend application
