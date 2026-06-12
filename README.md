@@ -44,7 +44,6 @@ GrantFlow/
 |-- docs/
 |   |-- API.md
 |   |-- ARCHITECTURE.md
-|   |-- CONFIGURATION.md
 |   |-- DEVELOPMENT.md
 |   `-- QUICKSTART.md
 |-- scripts/
@@ -89,7 +88,6 @@ For a full deployment walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 - [Quick Start](docs/QUICKSTART.md): Build, deploy, initialize, and invoke the contracts.
 - [Architecture](docs/ARCHITECTURE.md): Contract responsibilities, lifecycle, storage, events, and security model.
 - [API Reference](docs/API.md): Public functions, parameters, return values, events, and data structures.
-- [Configuration](docs/CONFIGURATION.md): Network, account, governance, build, and script settings.
 - [Development Guide](docs/DEVELOPMENT.md): Local workflow, scripts, testing strategy, and current limitations.
 - [Contributing](CONTRIBUTING.md): Contributor setup, standards, and pull request process.
 
