@@ -13,6 +13,7 @@ pub enum DataKey {
 
 #[derive(Clone)]
 #[contracttype]
+/// Configuration parameters for grant governance
 pub struct GovernanceParams {
     pub quorum_threshold: i128,
     pub voting_duration: u64,
