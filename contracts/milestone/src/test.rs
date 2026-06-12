@@ -55,4 +55,8 @@ fn test_approve_milestone() {
 
     let milestone = client.get_milestone(&1);
     assert_eq!(milestone.status, MilestoneStatus::Approved);
+
+    client.mark_paid(&1);
+    let milestone_paid = client.get_milestone(&1);
+    assert_eq!(milestone_paid.status, MilestoneStatus::Paid);
 }
