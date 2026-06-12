@@ -4,6 +4,7 @@ use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, String, Ve
 
 #[derive(Clone, PartialEq)]
 #[contracttype]
+/// Possible states for a grant proposal
 pub enum ProposalStatus {
     Pending,
     Approved,
