@@ -56,7 +56,7 @@ fn test_allocate_and_return_funds() {
 }
 
 #[test]
-fn test_deactivate_pool() {
+fn test_deactivate_and_activate_pool() {
     let env = Env::default();
     let contract_id = env.register_contract(None, GrantPoolContract);
     let client = GrantPoolContractClient::new(&env, &contract_id);
@@ -72,7 +72,10 @@ fn test_deactivate_pool() {
     );
 
     client.deactivate_pool(&admin, &pool_id);
-
     let pool = client.get_pool(&pool_id);
     assert!(!pool.active);
+
+    client.activate_pool(&admin, &pool_id);
+    let pool = client.get_pool(&pool_id);
+    assert!(pool.active);
 }
