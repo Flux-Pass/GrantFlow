@@ -79,3 +79,31 @@ fn test_deactivate_and_activate_pool() {
     let pool = client.get_pool(&pool_id);
     assert!(pool.active);
 }
+
+#[test]
+fn test_update_pool_details() {
+    let env = Env::default();
+    let contract_id = env.register_contract(None, GrantPoolContract);
+    let client = GrantPoolContractClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    client.initialize(&admin);
+
+    let pool_id = client.create_pool(
+        &admin,
+        &String::from_str(&env, "Old Name"),
+        &String::from_str(&env, "Old Description"),
+        &1_000_000,
+    );
+
+    client.update_pool(
+        &admin,
+        &pool_id,
+        &String::from_str(&env, "New Community Pool"),
+        &String::from_str(&env, "Updated description for grants"),
+    );
+
+    let pool = client.get_pool(&pool_id);
+    assert_eq!(pool.name, String::from_str(&env, "New Community Pool"));
+    assert_eq!(pool.description, String::from_str(&env, "Updated description for grants"));
+}
