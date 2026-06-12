@@ -131,6 +131,7 @@ impl GovernanceContract {
     }
 
     /// Check if quorum is met for a proposal
+    /// Total votes is sum of all voting weights cast
     pub fn check_quorum(env: Env, total_votes: i128) -> bool {
         let quorum: i128 = env
             .storage()
