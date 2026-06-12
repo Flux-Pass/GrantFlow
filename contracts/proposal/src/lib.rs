@@ -94,6 +94,7 @@ impl ProposalContract {
     }
 
     /// Vote on a proposal
+    /// Weight is the voting power of the voter
     pub fn vote(env: Env, proposal_id: u64, voter: Address, vote_for: bool, weight: i128) {
         voter.require_auth();
 
