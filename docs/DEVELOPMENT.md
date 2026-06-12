@@ -143,6 +143,7 @@ When changing contract behavior, update the relevant docs:
 
 - Update [API.md](API.md) for function signatures, authorization, panics, events, or data structures.
 - Update [ARCHITECTURE.md](ARCHITECTURE.md) when responsibilities, data flow, or security assumptions change.
+- Update [CONFIGURATION.md](CONFIGURATION.md) when network, script, build, or governance defaults change.
 - Update [QUICKSTART.md](QUICKSTART.md) if commands, script behavior, or deployment steps change.
 - Update [README.md](../README.md) for major scope or roadmap changes.
 

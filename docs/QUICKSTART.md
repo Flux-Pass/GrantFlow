@@ -330,6 +330,7 @@ soroban keys ls
 
 - Read the [Architecture Documentation](ARCHITECTURE.md)
 - Explore the [API Reference](API.md)
+- Review the [Configuration Guide](CONFIGURATION.md)
 - Review the [Development Guide](DEVELOPMENT.md)
 - Check [CONTRIBUTING.md](../CONTRIBUTING.md) for development guidelines
 - Build a frontend application
