@@ -38,7 +38,7 @@ soroban contract build
 cd ..
 ```
 
-You should see WASM files in `target/wasm32-unknown-unknown/release/`:
+When building from the `contracts/` workspace, you should see WASM files in `contracts/target/wasm32-unknown-unknown/release/`:
 - `grant_pool.wasm`
 - `proposal.wasm`
 - `milestone.wasm`
@@ -330,6 +330,7 @@ soroban keys ls
 
 - Read the [Architecture Documentation](ARCHITECTURE.md)
 - Explore the [API Reference](API.md)
+- Review the [Development Guide](DEVELOPMENT.md)
 - Check [CONTRIBUTING.md](../CONTRIBUTING.md) for development guidelines
 - Build a frontend application
 - Integrate with your DAO or community

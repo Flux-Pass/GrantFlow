@@ -1,6 +1,6 @@
 # Contributing to GrantFlow
 
-Thank you for your interest in contributing to GrantFlow! This project is designed for submission to Stellar ecosystem grant programs.
+Thank you for your interest in contributing to GrantFlow. This project is a Soroban smart contract codebase for transparent grant allocation on Stellar.
 
 ## Development Setup
 
@@ -21,15 +21,15 @@ cargo install --locked soroban-cli --version 20.0.0
 rustup target add wasm32-unknown-unknown
 ```
 
-4. Install Node.js dependencies:
+4. Optional helper tools:
 ```bash
-cd frontend && npm install
+# Needed by the shell scripts that read deployed-contracts.json
+jq --version
 ```
 
 ## Project Structure
 
 - `contracts/` - Soroban smart contracts written in Rust
-- `frontend/` - React-based web interface
 - `scripts/` - Deployment and testing scripts
 - `docs/` - Technical documentation
 
@@ -40,15 +40,17 @@ cd frontend && npm install
 ```bash
 cd contracts
 soroban contract build
-soroban contract test
+cargo test
 ```
 
-### Frontend
+### Scripts
+
+The scripts are written for a POSIX shell environment:
 
 ```bash
-cd frontend
-npm run build
-npm run test
+./scripts/deploy.sh
+./scripts/initialize.sh <ADMIN_ADDRESS>
+./scripts/test-flow.sh
 ```
 
 ## Contribution Guidelines
@@ -64,8 +66,8 @@ npm run test
 ## Code Standards
 
 - Follow Rust best practices for smart contracts
-- Use TypeScript for frontend code
-- Add inline documentation for public functions
+- Keep documentation in `README.md` and `docs/` current when behavior changes
+- Add concise inline documentation for public functions
 - Include unit tests for new features
 
 ## Security

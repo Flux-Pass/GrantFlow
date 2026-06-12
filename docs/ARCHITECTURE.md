@@ -2,277 +2,276 @@
 
 ## Overview
 
-GrantFlow is a decentralized grant management system built on Stellar using Soroban smart contracts. The system enables transparent, milestone-based grant distribution with on-chain governance.
+GrantFlow is a decentralized grant management system built on Stellar with Soroban smart contracts. The current codebase provides four independent contracts that model grant pools, proposals, milestones, and governance parameters.
+
+The contracts are designed as a foundation for transparent grant programs. Some production features, such as cross-contract enforcement and token transfers, are not wired yet and are called out in this document.
 
 ## System Components
 
-### 1. Grant Pool Contract
+### Grant Pool Contract
 
-**Purpose**: Manages grant pools and fund allocation
+**Purpose**: Manage grant pools and pool-level fund accounting.
 
 **Key Functions**:
-- `initialize(admin)` - Set up contract with admin
-- `create_pool(admin, name, description, total_funds)` - Create new grant pool
-- `get_pool(pool_id)` - Retrieve pool details
-- `allocate_funds(pool_id, amount)` - Reserve funds for approved proposal
-- `return_funds(pool_id, amount)` - Return unused funds
-- `deactivate_pool(admin, pool_id)` - Disable pool
+
+- `initialize(admin)` - Stores the contract admin and initializes the pool counter.
+- `create_pool(admin, name, description, total_funds)` - Creates a pool and returns its ID.
+- `get_pool(pool_id)` - Reads pool details.
+- `allocate_funds(pool_id, amount)` - Reserves funds from a pool when enough budget is available.
+- `return_funds(pool_id, amount)` - Adds unused funds back to a pool.
+- `deactivate_pool(admin, pool_id)` - Disables a pool.
+- `get_pool_count()` - Returns the number of pools created.
 
 **State**:
-- Pool metadata (name, description, admin)
+
+- Pool metadata
+- Pool admin
 - Total and available funds
 - Active status
+- Pool counter
 
 **Events**:
-- `pool_created` - New pool created
-- `funds_allocated` - Funds reserved
-- `funds_returned` - Funds returned
-- `pool_deactivated` - Pool disabled
 
-### 2. Proposal Contract
+- `pool_created`
+- `funds_allocated`
+- `funds_returned`
+- `pool_deactivated`
 
-**Purpose**: Handles proposal submission, voting, and lifecycle management
+### Proposal Contract
+
+**Purpose**: Handle proposal submission, voting, and proposal status.
 
 **Key Functions**:
-- `submit_proposal(...)` - Submit new grant proposal
-- `vote(proposal_id, voter, vote_for, weight)` - Cast weighted vote
-- `finalize_voting(proposal_id)` - Tally votes and determine outcome
-- `get_proposal(proposal_id)` - Retrieve proposal details
-- `update_status(proposal_id, new_status)` - Update proposal state
+
+- `submit_proposal(...)` - Creates a proposal with a voting deadline.
+- `vote(proposal_id, voter, vote_for, weight)` - Records a weighted vote.
+- `finalize_voting(proposal_id)` - Finalizes the proposal by simple majority.
+- `get_proposal(proposal_id)` - Reads proposal details.
+- `update_status(proposal_id, new_status)` - Updates proposal status.
+- `get_proposal_count()` - Returns the number of proposals created.
 
 **State**:
-- Proposal metadata (title, description, amount)
-- Voting data (votes for/against, deadline)
-- Status (Pending, Approved, Rejected, Active, Completed, Cancelled)
-- Milestone descriptions
+
+- Proposal metadata
+- Requested amount
+- Votes for and against
+- Voting deadline
+- Proposal status
+- Per-proposal voter records
 
 **Events**:
-- `proposal_submitted` - New proposal created
-- `vote_cast` - Vote recorded
-- `voting_finalized` - Voting completed
-- `status_updated` - Status changed
 
-### 3. Milestone Contract
+- `proposal_submitted`
+- `vote_cast`
+- `voting_finalized`
+- `status_updated`
 
-**Purpose**: Tracks milestone completion and fund release
+### Milestone Contract
+
+**Purpose**: Track milestone creation, evidence submission, review, and payment status.
 
 **Key Functions**:
-- `create_milestones(proposal_id, descriptions, amounts)` - Set up milestones
-- `submit_milestone(milestone_id, submitter, evidence_url)` - Submit completion proof
-- `approve_milestone(milestone_id, approver)` - Approve and release funds
-- `reject_milestone(milestone_id, rejector, reason)` - Reject submission
-- `mark_paid(milestone_id)` - Mark as paid
-- `get_milestone(milestone_id)` - Retrieve milestone details
+
+- `create_milestones(proposal_id, descriptions, amounts)` - Creates milestones for a proposal.
+- `submit_milestone(milestone_id, submitter, evidence_url)` - Records milestone evidence.
+- `approve_milestone(milestone_id, approver)` - Approves submitted evidence.
+- `reject_milestone(milestone_id, rejector, reason)` - Rejects submitted evidence.
+- `mark_paid(milestone_id)` - Marks an approved milestone as paid.
+- `get_milestone(milestone_id)` - Reads milestone details.
+- `get_proposal_milestone_count(proposal_id)` - Reads milestone count for a proposal.
 
 **State**:
-- Milestone metadata (description, amount)
-- Status (Pending, Submitted, Approved, Rejected, Paid)
+
+- Milestone metadata
+- Milestone amount
+- Review status
 - Evidence URL
-- Timestamps (submitted, approved)
+- Submitted and approved timestamps
+- Milestone counter
 
 **Events**:
-- `milestones_created` - Milestones initialized
-- `milestone_submitted` - Evidence submitted
-- `milestone_approved` - Milestone approved
-- `milestone_rejected` - Milestone rejected
-- `milestone_paid` - Payment completed
 
-### 4. Governance Contract
+- `milestones_created`
+- `milestone_submitted`
+- `milestone_approved`
+- `milestone_rejected`
+- `milestone_paid`
 
-**Purpose**: Manages voting parameters and power distribution
+### Governance Contract
+
+**Purpose**: Store voting power and governance parameters.
 
 **Key Functions**:
-- `initialize(admin, quorum_threshold, voting_duration)` - Set up governance
-- `set_voting_power(admin, voter, power)` - Assign voting weight
-- `get_voting_power(voter)` - Query voting weight
-- `update_quorum(admin, new_threshold)` - Adjust quorum requirement
-- `update_voting_duration(admin, new_duration)` - Adjust voting period
-- `check_quorum(total_votes)` - Verify quorum met
-- `get_params()` - Retrieve all parameters
+
+- `initialize(admin, quorum_threshold, voting_duration)` - Initializes governance parameters.
+- `set_voting_power(admin, voter, power)` - Assigns voting power to an address.
+- `get_voting_power(voter)` - Reads voting power for an address.
+- `update_quorum(admin, new_threshold)` - Updates the quorum threshold.
+- `get_quorum()` - Reads the quorum threshold.
+- `update_voting_duration(admin, new_duration)` - Updates default voting duration.
+- `get_voting_duration()` - Reads default voting duration.
+- `check_quorum(total_votes)` - Returns whether total votes meet quorum.
+- `get_params()` - Reads governance parameters.
 
 **State**:
-- Voting power per address
+
+- Governance admin
+- Voting power by address
 - Quorum threshold
-- Voting duration
-- Admin address
+- Default voting duration
 
 **Events**:
-- `governance_initialized` - Contract initialized
-- `voting_power_set` - Power assigned
-- `quorum_updated` - Threshold changed
-- `voting_duration_updated` - Duration changed
 
-## Data Flow
+- `governance_initialized`
+- `voting_power_set`
+- `quorum_updated`
+- `voting_duration_updated`
 
-### Grant Lifecycle
+## Grant Lifecycle
 
-```
+```text
 1. Pool Creation
-   Admin → Grant Pool Contract
-   ↓
+   Admin -> Grant Pool Contract
+   |
+   v
    Pool created with budget
 
 2. Proposal Submission
-   Proposer → Proposal Contract
-   ↓
+   Proposer -> Proposal Contract
+   |
+   v
    Proposal enters voting period
 
 3. Voting
-   Voters → Proposal Contract
-   (weighted by Governance Contract)
-   ↓
-   Votes tallied
+   Voter -> Proposal Contract
+   |
+   v
+   Weighted vote is recorded
 
 4. Voting Finalization
-   Anyone → Proposal Contract
-   ↓
-   Status: Approved or Rejected
+   Anyone -> Proposal Contract
+   |
+   v
+   Proposal becomes Approved or Rejected
 
-5. Milestone Creation (if approved)
-   System → Milestone Contract
-   ↓
-   Milestones initialized
+5. Milestone Creation
+   Operator -> Milestone Contract
+   |
+   v
+   Milestones are created for an approved proposal
 
 6. Milestone Submission
-   Proposer → Milestone Contract
-   ↓
-   Evidence submitted for review
+   Submitter -> Milestone Contract
+   |
+   v
+   Evidence URL is recorded
 
-7. Milestone Approval
-   Admin/Reviewer → Milestone Contract
-   ↓
-   Funds released
+7. Milestone Review
+   Reviewer -> Milestone Contract
+   |
+   v
+   Milestone becomes Approved or Rejected
 
-8. Payment
-   System → Milestone Contract
-   ↓
-   Marked as paid
+8. Payment Recording
+   Operator -> Milestone Contract
+   |
+   v
+   Approved milestone is marked as paid
 ```
 
 ## Security Model
 
 ### Authentication
-- All state-changing functions require `require_auth()`
-- Admin-only functions verify admin address
-- Proposers must authenticate submissions
+
+The contracts use `require_auth()` for direct user authorization on major state-changing actions:
+
+- Pool creation and pool deactivation require the supplied admin address.
+- Proposal submission requires the proposer address.
+- Voting requires the voter address.
+- Milestone submission requires the submitter address.
+- Milestone approval and rejection require the reviewer address.
+- Governance updates require the governance admin address.
 
 ### Authorization
-- Pool admins control their pools
-- Governance admin controls voting parameters
-- Milestone approvers must be authorized
+
+The current implementation has basic authorization checks, but several functions intended for system or contract use are externally callable:
+
+- `allocate_funds`
+- `return_funds`
+- `update_status`
+- `create_milestones`
+- `mark_paid`
+
+Production deployments should add caller restrictions or cross-contract authorization before relying on these functions for real funds.
 
 ### Validation
-- Voting period enforcement
-- Double-vote prevention
-- Fund availability checks
-- Status transition validation
 
-### Audit Trail
-- All actions emit events
-- Complete on-chain history
-- Immutable record of decisions
+Current validation includes:
+
+- One-time initialization checks
+- Pool active and available-fund checks
+- Voting deadline enforcement
+- Double-vote prevention
+- Proposal status checks during voting and finalization
+- Milestone status transition checks
+- Governance admin checks for parameter updates
+
+Current validation does not include:
+
+- Automatic governance quorum enforcement in proposal finalization
+- Automatic voting power lookup from the governance contract
+- Automatic pool allocation when proposals are approved
+- Native or token asset transfers for milestone payments
 
 ## Storage Strategy
 
-### Instance Storage
-Used for:
-- Contract configuration
-- Admin addresses
-- Global counters
-- Governance parameters
+The contracts use Soroban instance storage for contract state and indexed records:
 
-### Persistent Storage
-Used for:
-- Pool data
-- Proposal data
-- Milestone data
-- Voting records
+- `Pool(id)` stores grant pool data.
+- `Proposal(id)` stores proposal data.
+- `Vote(proposal_id, voter)` stores whether a voter has voted.
+- `Milestone(id)` stores milestone data.
+- `ProposalMilestones(proposal_id)` stores milestone count per proposal.
+- `VotingPower(address)` stores governance voting power.
+- Counter keys store pool, proposal, and milestone totals.
 
 ## Integration Points
 
-### External Contracts
-- Can integrate with token contracts for voting power
-- Can integrate with payment contracts for fund distribution
-- Can integrate with reputation systems
+Potential future integrations include:
 
-### Off-Chain Systems
-- Evidence URLs point to external storage (IPFS, etc.)
-- Frontend applications query contract state
-- Analytics systems consume events
-
-## Scalability Considerations
-
-### Current Design
-- Linear storage per pool/proposal/milestone
-- O(1) lookups by ID
-- No pagination (frontend responsibility)
-
-### Future Improvements
-- Batch operations for multiple votes
-- Delegated voting
-- Proposal categories/tags
-- Advanced search indices
-
-## Upgrade Strategy
-
-### Contract Upgrades
-- Deploy new contract versions
-- Migrate state if needed
-- Update frontend to new addresses
-
-### Parameter Updates
-- Governance contract allows runtime updates
-- No contract redeployment needed
-- Backward compatible
+- Stellar asset contracts for escrow and milestone payment release
+- Governance token contracts for voting power
+- Reputation systems for non-token voting weight
+- IPFS or similar storage for milestone evidence
+- Frontend and analytics applications that read contract state and events
 
 ## Testing Strategy
 
-### Unit Tests
-- Each contract has comprehensive tests
-- Cover happy paths and edge cases
-- Mock authentication for testing
+Each contract includes a Rust test module under its own `src/test.rs`. Tests should cover:
 
-### Integration Tests
-- Test cross-contract interactions
-- Verify event emissions
-- Test complete workflows
+- Happy-path workflows
+- Authorization failures
+- Invalid status transitions
+- Boundary values for amounts and voting weights
+- Event-critical state changes
 
-### Testnet Deployment
-- Deploy to Stellar testnet
-- Manual testing of full lifecycle
-- Performance validation
+Run all tests from the contracts workspace:
 
-## Monitoring
+```bash
+cd contracts
+cargo test
+```
 
-### Key Metrics
-- Pools created
-- Proposals submitted
-- Voting participation
-- Milestone completion rate
-- Funds distributed
+## Upgrade Strategy
 
-### Events to Monitor
-- All contract events
-- Failed transactions
-- Unusual voting patterns
-- Milestone rejections
+The current project does not define an on-chain upgrade mechanism. New versions should be deployed as new contracts, followed by any required state migration and application configuration updates.
 
 ## Future Enhancements
 
-### Phase 2
-- Multi-signature approvals
-- Reputation-based voting
-- Proposal templates
-- Automated fund distribution
-
-### Phase 3
-- DEX integration for token swaps
-- Cross-chain bridges
-- Mobile SDK
-- Analytics dashboard
-
-### Phase 4
-- AI-powered proposal analysis
-- Predictive funding models
-- Automated compliance checks
-- Advanced governance mechanisms
+- Cross-contract calls between proposal, governance, grant pool, and milestone contracts
+- Quorum enforcement during proposal finalization
+- Token escrow and payment release
+- Multi-signature milestone approvals
+- Delegated or reputation-based voting
+- Proposal categories and searchable indexes
+- Frontend dashboard and event analytics

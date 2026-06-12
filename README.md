@@ -1,252 +1,151 @@
-# 📊 GrantFlow – Transparent Grant Allocation Engine
+# GrantFlow - Transparent Grant Allocation Engine
 
-A decentralized system for managing and distributing community grants on the Stellar network.
+GrantFlow is a Soroban smart contract project for managing community grants on the Stellar network. It models grant pools, proposal voting, milestone review, and governance parameters so fund allocation decisions can be tracked transparently on-chain.
 
-## Problem Statement
+## What It Solves
 
-Traditional grant systems lack transparency and proper tracking mechanisms, making it difficult for communities to:
-- Track fund allocation and usage
-- Ensure accountability in grant distribution
-- Verify milestone completion
-- Maintain an auditable history of decisions
+Traditional grant programs often rely on off-chain spreadsheets, manual approvals, and fragmented reporting. GrantFlow provides a contract-level foundation for:
 
-## Solution
+- Creating named grant pools with dedicated budgets
+- Accepting grant proposals tied to a pool
+- Recording weighted votes and proposal outcomes
+- Tracking milestone submissions, approvals, rejections, and payment state
+- Emitting events that create an auditable history of grant activity
 
-GrantFlow provides a transparent, blockchain-based grant management system with:
+## Current Scope
 
-### Core Features
+This repository contains the smart contracts, tests, deployment scripts, and technical documentation. It does not currently include a frontend application or token payment integration.
 
-- **Grant Pool Creation**: Organizations can create dedicated grant pools with specific budgets
-- **Proposal Submission**: Community members submit detailed grant proposals
-- **Voting Mechanism**: Token-weighted or reputation-based voting for proposal approval
-- **Milestone-Based Release**: Funds released incrementally upon milestone completion
-- **Audit Trail**: Complete event history stored on-chain for transparency
+Important implementation notes:
 
-## Technical Stack
+- The contracts are deployed independently.
+- The proposal contract accepts vote weights supplied at call time; it does not read the governance contract directly.
+- The governance contract stores voting power and quorum settings, but quorum is not enforced by the proposal contract yet.
+- Milestone approval updates milestone state; actual asset transfers are not implemented in the current contracts.
 
-- **Blockchain**: Stellar Network
-- **Smart Contracts**: Soroban (Rust)
-- **Language**: Rust with WebAssembly compilation
+## Contracts
 
-## Project Structure
+| Contract | Purpose |
+| --- | --- |
+| `grant-pool` | Creates pools, tracks total and available funds, allocates and returns budget amounts. |
+| `proposal` | Stores proposals, accepts weighted votes, finalizes proposals by simple majority. |
+| `milestone` | Creates milestones, records evidence URLs, tracks review and payment status. |
+| `governance` | Stores voting power, quorum threshold, and default voting duration. |
 
-```
-grantflow/
+## Repository Layout
+
+```text
+GrantFlow/
 ├── contracts/
-│   ├── grant-pool/      # Pool management and fund allocation
-│   ├── proposal/        # Proposal submission and voting
-│   ├── milestone/       # Milestone tracking and fund release
-│   └── governance/      # Voting rights and parameters
-├── CONTRIBUTING.md      # Contribution guidelines
-├── LICENSE             # MIT License
-└── README.md           # This file
+│   ├── grant-pool/
+│   ├── proposal/
+│   ├── milestone/
+│   └── governance/
+├── docs/
+│   ├── API.md
+│   ├── ARCHITECTURE.md
+│   ├── DEVELOPMENT.md
+│   └── QUICKSTART.md
+├── scripts/
+│   ├── deploy.sh
+│   ├── initialize.sh
+│   └── test-flow.sh
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
 ```
 
-## Smart Contract Architecture
-
-### 1. Grant Pool Contract
-Manages grant pools and fund allocation:
-- Create pools with specific budgets
-- Track available funds
-- Allocate and return funds
-- Pool activation/deactivation
-
-### 2. Proposal Contract
-Handles proposal lifecycle:
-- Submit proposals with milestones
-- Token-weighted voting system
-- Automatic vote tallying
-- Status management (Pending → Approved/Rejected → Active → Completed)
-
-### 3. Milestone Contract
-Tracks milestone completion:
-- Create milestones for approved proposals
-- Submit completion evidence
-- Approve/reject submissions
-- Track payment status
-
-### 4. Governance Contract
-Manages voting parameters:
-- Set voting power (token-weighted or reputation-based)
-- Configure quorum thresholds
-- Adjust voting durations
-- Check quorum requirements
-
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Rust and Cargo
-- Soroban CLI (v20.0.0+)
-- Stellar account with testnet XLM
+- `wasm32-unknown-unknown` Rust target
+- Soroban CLI compatible with Soroban SDK `20.0.0`
+- A funded Stellar testnet account for deployment
+- `jq` when using the helper scripts
 
-### Installation
+## Quick Start
 
 ```bash
-# Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# Install Soroban CLI
-cargo install --locked soroban-cli
-
-# Add WebAssembly target
-rustup target add wasm32-unknown-unknown
-
-# Clone repository
+# Clone the repository
 git clone https://github.com/Harbduls/GrantFlow.git
 cd GrantFlow
-```
 
-### Build Contracts
+# Install the WASM target
+rustup target add wasm32-unknown-unknown
 
-```bash
+# Build contracts
 cd contracts
-
-# Build all contracts
 soroban contract build
 
 # Run tests
-soroban contract test
+cargo test
 ```
 
-### Deploy to Testnet
+For a full deployment walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 
-```bash
-# Deploy grant-pool contract
-soroban contract deploy \
-  --wasm target/wasm32-unknown-unknown/release/grant_pool.wasm \
-  --source <YOUR_SECRET_KEY> \
-  --network testnet
+## Documentation
 
-# Repeat for other contracts
-```
+- [Quick Start](docs/QUICKSTART.md): Build, deploy, initialize, and invoke the contracts.
+- [Architecture](docs/ARCHITECTURE.md): Contract responsibilities, lifecycle, storage, events, and security model.
+- [API Reference](docs/API.md): Public functions, parameters, return values, events, and data structures.
+- [Development Guide](docs/DEVELOPMENT.md): Local workflow, scripts, testing strategy, and current limitations.
+- [Contributing](CONTRIBUTING.md): Contributor setup, standards, and pull request process.
 
-## Usage Example
+## Common Workflow
 
-### 1. Create a Grant Pool
+1. Initialize the grant pool and governance contracts.
+2. Create a grant pool with an available budget.
+3. Submit a proposal against that pool.
+4. Set voting power in the governance contract.
+5. Vote on the proposal with an explicit weight.
+6. Finalize voting after the voting deadline.
+7. Create milestones for approved proposals.
+8. Submit milestone evidence and approve or reject it.
+9. Mark approved milestones as paid after payment is handled externally.
 
-```rust
-// Initialize and create pool
-let pool_id = grant_pool_client.create_pool(
-    &admin,
-    &"Community Development Fund",
-    &"Grants for community projects",
-    &1_000_000  // 1M stroops
-);
-```
+## Events
 
-### 2. Submit a Proposal
+The contracts emit events for key lifecycle actions, including:
 
-```rust
-let proposal_id = proposal_client.submit_proposal(
-    &pool_id,
-    &proposer,
-    &"Build Community Dashboard",
-    &"A dashboard for tracking community metrics",
-    &50_000,  // Requested amount
-    &86400,   // 24h voting period
-    &milestones
-);
-```
-
-### 3. Vote on Proposal
-
-```rust
-proposal_client.vote(
-    &proposal_id,
-    &voter,
-    &true,    // Vote for
-    &100      // Voting weight
-);
-```
-
-### 4. Submit Milestone Evidence
-
-```rust
-milestone_client.submit_milestone(
-    &milestone_id,
-    &proposer,
-    &"https://github.com/project/milestone-1"
-);
-```
-
-### 5. Approve and Release Funds
-
-```rust
-milestone_client.approve_milestone(
-    &milestone_id,
-    &admin
-);
-```
-
-## Event Tracking
-
-All contracts emit events for complete audit trail:
-
-- `pool_created` - New grant pool created
-- `proposal_submitted` - New proposal submitted
-- `vote_cast` - Vote recorded
-- `voting_finalized` - Voting period ended
-- `milestone_submitted` - Milestone evidence submitted
-- `milestone_approved` - Milestone approved, funds released
-- `funds_allocated` - Funds allocated from pool
-- `voting_power_set` - Voting power updated
+- `pool_created`
+- `funds_allocated`
+- `funds_returned`
+- `proposal_submitted`
+- `vote_cast`
+- `voting_finalized`
+- `milestones_created`
+- `milestone_submitted`
+- `milestone_approved`
+- `milestone_rejected`
+- `milestone_paid`
+- `voting_power_set`
 
 ## Testing
 
 ```bash
-# Run all tests
 cd contracts
-cargo test
-
-# Run specific contract tests
-cd grant-pool
 cargo test
 ```
 
-## Security Considerations
+You can also run an individual contract test suite:
 
-- All state-changing functions require authentication
-- Voting periods are enforced on-chain
-- Double-voting prevention
-- Fund allocation checks before approval
-- Admin-only governance parameter updates
-
-## Maintainer Value
-
-GrantFlow combines three critical components:
-
-1. **Governance**: Democratic decision-making for fund allocation
-2. **Payments**: Secure, automated fund distribution via Stellar
-3. **Tracking**: Complete audit trail and milestone verification
-
-This combination creates a powerful tool for DAOs, foundations, and community organizations managing grants transparently.
-
-## Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+```bash
+cd contracts/grant-pool
+cargo test
+```
 
 ## Roadmap
 
-- [x] Core smart contracts (Grant Pool, Proposal, Milestone, Governance)
-- [x] Comprehensive test coverage
-- [ ] Frontend web application
-- [ ] Multi-signature approval support
-- [ ] Reputation-based voting system
-- [ ] Integration with Stellar DEX for token swaps
-- [ ] Mobile application
+- [x] Core Soroban contracts
+- [x] Contract unit tests
+- [x] Deployment and initialization scripts
+- [ ] Cross-contract enforcement for governance and pool allocation
+- [ ] Token-based payment release
+- [ ] Frontend application
+- [ ] Multi-signature milestone approvals
+- [ ] Reputation-based voting integration
 - [ ] Analytics dashboard
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details
-
-## Contact
-
-For questions or support, please open an issue on GitHub.
-
----
-
-**Built for the Stellar ecosystem** 🌟
-
-Leveraging Soroban smart contracts for transparent, efficient grant management.
+GrantFlow is licensed under the MIT License. See [LICENSE](LICENSE) for details.
