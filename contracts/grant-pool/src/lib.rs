@@ -193,7 +193,7 @@ impl GrantPoolContract {
         );
     }
 
-    /// Get all pool IDs
+    /// Get the total number of grant pools created
     pub fn get_pool_count(env: Env) -> u64 {
         env.storage()
             .instance()
