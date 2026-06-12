@@ -108,9 +108,13 @@ For a full deployment walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 The contracts emit events for key lifecycle actions, including:
 
 - `pool_created`
+- `pool_deactivated`
+- `pool_activated`
+- `pool_updated`
 - `funds_allocated`
 - `funds_returned`
 - `proposal_submitted`
+- `proposal_cancelled`
 - `vote_cast`
 - `voting_finalized`
 - `milestones_created`
@@ -119,6 +123,9 @@ The contracts emit events for key lifecycle actions, including:
 - `milestone_rejected`
 - `milestone_paid`
 - `voting_power_set`
+- `governance_initialized`
+- `quorum_updated`
+- `voting_duration_updated`
 
 ## Testing
 
