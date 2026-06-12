@@ -197,6 +197,35 @@ impl ProposalContract {
         );
     }
 
+    /// Cancel a proposal
+    pub fn cancel_proposal(env: Env, proposal_id: u64, proposer: Address) {
+        proposer.require_auth();
+
+        let mut proposal: Proposal = env
+            .storage()
+            .instance()
+            .get(&DataKey::Proposal(proposal_id))
+            .unwrap();
+
+        if proposal.proposer != proposer {
+            panic!("Unauthorized");
+        }
+
+        if proposal.status != ProposalStatus::Pending {
+            panic!("Proposal cannot be cancelled");
+        }
+
+        proposal.status = ProposalStatus::Cancelled;
+        env.storage()
+            .instance()
+            .set(&DataKey::Proposal(proposal_id), &proposal);
+
+        env.events().publish(
+            (String::from_str(&env, "proposal_cancelled"),),
+            proposal_id,
+        );
+    }
+
     /// Get total proposal count
     pub fn get_proposal_count(env: Env) -> u64 {
         env.storage()
