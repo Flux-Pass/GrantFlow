@@ -169,6 +169,30 @@ impl GrantPoolContract {
         );
     }
 
+    /// Update pool details
+    pub fn update_pool(env: Env, admin: Address, pool_id: u64, name: String, description: String) {
+        admin.require_auth();
+
+        let mut pool: GrantPool = env
+            .storage()
+            .instance()
+            .get(&DataKey::Pool(pool_id))
+            .unwrap();
+
+        if pool.admin != admin {
+            panic!("Unauthorized");
+        }
+
+        pool.name = name;
+        pool.description = description;
+        env.storage().instance().set(&DataKey::Pool(pool_id), &pool);
+
+        env.events().publish(
+            (String::from_str(&env, "pool_updated"),),
+            pool_id,
+        );
+    }
+
     /// Get all pool IDs
     pub fn get_pool_count(env: Env) -> u64 {
         env.storage()
