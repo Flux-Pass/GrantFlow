@@ -151,6 +151,8 @@ When changing contract behavior, update the relevant docs:
 - Update [ARCHITECTURE.md](ARCHITECTURE.md) when responsibilities, data flow, or security assumptions change.
 - Update [QUICKSTART.md](QUICKSTART.md) if commands, script behavior, or deployment steps change.
 - Update [README.md](../README.md) for major scope or roadmap changes.
+- Update [CONTRIBUTING.md](../CONTRIBUTING.md) if development workflow or contribution guidelines change.
+- Update [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) and [SECURITY.md](../SECURITY.md) only if there are policy changes (rare!).
 
 ## Suggested Development Flow
 
