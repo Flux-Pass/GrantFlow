@@ -6,6 +6,7 @@ Cargo.lock
 # Soroban
 *.wasm
 *.optimized.wasm
+.soroban/
 
 # Node / NPM
 node_modules/
