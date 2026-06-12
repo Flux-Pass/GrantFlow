@@ -33,6 +33,32 @@ jq --version
 - `scripts/` - Deployment and testing scripts
 - `docs/` - Technical documentation
 
+## Your First Contribution
+
+If you're new to the project and looking for a place to start, check for issues labeled "good first issue"! Here's a quick step-by-step for your first PR:
+
+1. Fork the repository on GitHub
+2. Clone your forked repository locally:
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/GrantFlow.git
+   cd GrantFlow
+   ```
+3. Create a new branch for your changes:
+   ```bash
+   git checkout -b fix/update-comment
+   ```
+4. Make your change (update a comment, fix a typo, add a small test!)
+5. Stage and commit your changes:
+   ```bash
+   git add .
+   git commit -m "fix: update X comment"
+   ```
+6. Push your branch to GitHub:
+   ```bash
+   git push origin fix/update-comment
+   ```
+7. Open a pull request from your branch to the main repository
+
 ## Building and Testing
 
 ### Smart Contracts
