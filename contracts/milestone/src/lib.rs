@@ -4,6 +4,7 @@ use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, String};
 
 #[derive(Clone, PartialEq)]
 #[contracttype]
+/// Possible states for a grant milestone
 pub enum MilestoneStatus {
     Pending,
     Submitted,
