@@ -135,6 +135,12 @@ Only the grant pool and governance contracts require initialization in the curre
 - `update_status`, `allocate_funds`, `return_funds`, and `mark_paid` do not currently restrict caller contracts.
 - The shell scripts contain user-facing status text only; they are not a substitute for contract tests.
 
+## Recent Additions
+
+- Grant pools can now be activated after being deactivated.
+- Grant pool names and descriptions can be updated.
+- Pending proposals can be cancelled by the proposer.
+
 Document these limitations in issues or pull requests when proposing changes that depend on production-grade enforcement.
 
 ## Documentation Checklist
