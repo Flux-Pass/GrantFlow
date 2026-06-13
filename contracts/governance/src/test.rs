@@ -53,6 +53,22 @@ fn test_update_quorum() {
 }
 
 #[test]
+fn test_update_voting_duration() {
+    let env = Env::default();
+    env.mock_all_auths();
+    
+    let contract_id = env.register_contract(None, GovernanceContract);
+    let client = GovernanceContractClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+
+    client.initialize(&admin, &1000, &86400);
+    client.update_voting_duration(&admin, &172800);
+
+    assert_eq!(client.get_voting_duration(), 172800);
+}
+
+#[test]
 fn test_check_quorum() {
     let env = Env::default();
     let contract_id = env.register_contract(None, GovernanceContract);
