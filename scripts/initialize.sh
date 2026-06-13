@@ -14,6 +14,10 @@ fi
 ADMIN_ADDRESS=$1
 NETWORK="testnet"
 
+# Default initial governance parameters
+DEFAULT_QUORUM=1000
+DEFAULT_VOTING_DURATION=86400
+
 echo "🔧 Initializing GrantFlow Contracts"
 echo "===================================="
 echo "Admin: $ADMIN_ADDRESS"
@@ -46,8 +50,8 @@ soroban contract invoke \
     --network $NETWORK \
     -- initialize \
     --admin $ADMIN_ADDRESS \
-    --quorum_threshold 1000 \
-    --voting_duration 86400
+    --quorum_threshold $DEFAULT_QUORUM \
+    --voting_duration $DEFAULT_VOTING_DURATION
 
 echo "✅ Governance initialized"
 
@@ -56,8 +60,8 @@ echo "🎉 Initialization Complete!"
 echo "===================================="
 echo ""
 echo "Default Parameters:"
-echo "  Quorum Threshold: 1000"
-echo "  Voting Duration: 86400 seconds (24 hours)"
+echo "  Quorum Threshold: $DEFAULT_QUORUM"
+echo "  Voting Duration: $DEFAULT_VOTING_DURATION seconds (24 hours)"
 echo ""
 echo "You can now:"
 echo "  1. Create grant pools"
