@@ -67,7 +67,7 @@ GrantFlow/
 
 ```bash
 # Clone the repository
-git clone https://github.com/Harbduls/GrantFlow.git
+git clone https://github.com/FluxGrant/GrantFlow.git
 cd GrantFlow
 
 # Install the WASM target
