@@ -35,7 +35,7 @@ jq --version
 
 ## Your First Contribution
 
-If you're new to the project and looking for a place to start, check for issues labeled "good first issue"! Here's a quick step-by-step for your first PR:
+If you're new to the project and looking for a place to start, check for issues labeled "good first issue"! Here's a quick step-by-step guide for your first PR:
 
 1. Fork the repository on GitHub
 2. Clone your forked repository locally:
